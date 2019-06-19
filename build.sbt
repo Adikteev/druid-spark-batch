@@ -19,6 +19,14 @@
 organization := "io.druid.extensions"
 name := "druid-spark-batch"
 
+
+lazy val commonSettings = Seq(
+  organization := "io.druid.extensions",
+  name := "druid-spark-batch",
+  version := "1.1",
+  scalaVersion := "2.11.12"
+)
+
 licenses := Seq("Apache License, Version 2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0"))
 homepage := Some(url("https://github.com/metamx/druid-spark-batch"))
 crossScalaVersions := Seq("2.11.12")
@@ -39,8 +47,8 @@ val sparkDep = ("org.apache.spark" %% "spark-core" % spark_version
   exclude("org.slf4j", "slf4j-log4j12")
   exclude("com.google.guava", "guava")
   exclude("org.apache.hadoop", "hadoop-client")
-  exclude("org.apache.hadoop", "hadoop-yarn-api")
-  exclude("org.apache.hadoop", "hadoop-yarn-common")
+  //exclude("org.apache.hadoop", "hadoop-yarn-api")
+  //exclude("org.apache.hadoop", "hadoop-yarn-common")
   exclude("com.sun.jersey", "jersey-server")
   exclude("com.sun.jersey", "jersey-core")
   exclude("com.sun.jersey", "jersey-core")
@@ -51,16 +59,16 @@ val sparkDep = ("org.apache.spark" %% "spark-core" % spark_version
   exclude("org.eclipse.jetty", "jetty-http")
   exclude("org.eclipse.jetty", "jetty-servlet")
   exclude("com.esotericsoftware.minlog", "minlog")
-  /*
+  
   exclude("com.fasterxml.jackson.core", "jackson-core")
   exclude("com.fasterxml.jackson.core", "jackson-annotations")
   exclude("com.fasterxml.jackson.dataformat", "jackson-dataformat-smile")
   exclude("com.fasterxml.jackson.datatype", "jackson-datatype-joda")
   exclude("com.fasterxml.jackson.core", "jackson-databind")
-  */
+ 
   exclude("io.netty", "netty")
   exclude("org.apache.mesos", "mesos")
-  ) % "provided"
+  ) 
 libraryDependencies += sparkDep
 
 val hadoopDep = ("org.apache.hadoop" % "hadoop-client" % hadoop_version
@@ -75,7 +83,7 @@ val hadoopDep = ("org.apache.hadoop" % "hadoop-client" % hadoop_version
   exclude("org.slf4j", "slf4j-log4j12")
   exclude("log4j", "log4j")
   exclude("commons-beanutils", "commons-beanutils")
-  exclude("org.apache.hadoop", "hadoop-yarn-api")
+  //exclude("org.apache.hadoop", "hadoop-yarn-api")
   exclude("com.sun.jersey", "jersey-server")
   exclude("com.sun.jersey", "jersey-core")
   exclude("com.sun.jersey", "jersey-core")
@@ -92,26 +100,33 @@ val hadoopDep = ("org.apache.hadoop" % "hadoop-client" % hadoop_version
   exclude("com.fasterxml.jackson.datatype", "jackson-datatype-joda")
   exclude("com.fasterxml.jackson.core", "jackson-databind")
   exclude("io.netty", "netty")
-  ) % "provided"
+  ) 
 // For Path
+libraryDependencies += "org.apache.hadoop" % "hadoop-aws" % "2.7.3"
+
 libraryDependencies += hadoopDep
 
 libraryDependencies += "org.scalatest" %% "scalatest" % "2.2.4" % "test"
-libraryDependencies += "org.apache.druid" % "druid-processing" % druid_version % "provided"
-libraryDependencies += "org.apache.druid" % "druid-server" % druid_version % "provided"
-libraryDependencies += "org.apache.druid" % "druid-indexing-service" % druid_version % "provided"
-libraryDependencies += "org.apache.druid" % "druid-indexing-hadoop" % druid_version % "provided"
-libraryDependencies += "org.apache.druid.extensions" % "druid-avro-extensions" % druid_version % "provided"
-libraryDependencies += "org.apache.druid.extensions" % "druid-parquet-extensions" % druid_version % "provided"
+libraryDependencies += "org.apache.druid" % "druid-processing" % druid_version 
+libraryDependencies += "org.apache.druid" % "druid-server" % druid_version 
+libraryDependencies += "org.apache.druid" % "druid-indexing-service" % druid_version
+libraryDependencies += "org.apache.druid" % "druid-indexing-hadoop" % druid_version 
+libraryDependencies += "org.apache.druid.extensions" % "druid-avro-extensions" % druid_version 
+libraryDependencies += "org.apache.druid.extensions" % "druid-parquet-extensions" % druid_version 
 
 libraryDependencies +=
-  "org.joda" % "joda-convert" % "1.8.1" % "provided" // Prevents intellij silliness and sbt warnings
-libraryDependencies += "com.google.guava" % "guava" % guava_version % "provided"// Prevents serde problems for guice exceptions
-libraryDependencies += "com.sun.jersey" % "jersey-servlet" % "1.17.1" % "provided"
+  "org.joda" % "joda-convert" % "1.8.1"  // Prevents intellij silliness and sbt warnings
+libraryDependencies += "com.google.guava" % "guava" % guava_version // Prevents serde problems for guice exceptions
+libraryDependencies += "com.sun.jersey" % "jersey-servlet" % "1.17.1" 
+libraryDependencies += "com.google.inject" % "guice" % "4.1.0"
+libraryDependencies += "com.google.inject.extensions" % "guice-multibindings" % "4.1.0"
 
-libraryDependencies += "org.apache.mesos" % "mesos"  % mesos_version % "provided"  classifier "shaded-protobuf"
+libraryDependencies += "org.apache.mesos" % "mesos"  % mesos_version   classifier "shaded-protobuf"
 
 lazy val parquetV = "1.10.1"
+
+lazy val shaded = (project in file("."))
+  .settings(commonSettings)
 
 libraryDependencies += "org.apache.parquet" % "parquet-common" % parquetV
 libraryDependencies += "org.apache.parquet" % "parquet-encoding" % parquetV
@@ -119,8 +134,8 @@ libraryDependencies += "org.apache.parquet" % "parquet-column" % parquetV
 libraryDependencies += "org.apache.parquet" % "parquet-hadoop" % parquetV
 libraryDependencies += "org.apache.parquet" % "parquet-avro" % parquetV
 
-libraryDependencies += "org.apache.zookeeper" % "zookeeper" % "3.5.4-beta" % "provided"
-libraryDependencies += "org.apache.curator" % "curator-framework" % "4.1.0" % "provided"
+libraryDependencies += "org.apache.zookeeper" % "zookeeper" % "3.5.4-beta" 
+libraryDependencies += "org.apache.curator" % "curator-framework" % "4.1.0"
 libraryDependencies += "io.dropwizard.metrics" % "metrics-core" % "4.1.0"
 libraryDependencies += "io.dropwizard.metrics" % "metrics-jvm" % "4.1.0"
 libraryDependencies += "io.dropwizard.metrics" % "metrics-json" % "4.1.0"
@@ -130,10 +145,26 @@ libraryDependencies += "com.fasterxml.jackson.module" %% "jackson-module-scala" 
 
 releaseCrossBuild := true
 
-assemblyMergeStrategy in assembly := {
+dependencyOverrides +="com.google.guava" % "guava" % guava_version
+
+  assemblyMergeStrategy in assembly := {
+  case PathList("org", "objectweb", xs@_*) => MergeStrategy.first
+  case PathList("com", "amazonaws", xs@_*) => MergeStrategy.first
+  case PathList("org", "apache", "commons", xs@_*) => MergeStrategy.first
+  case PathList("org", "apache", "log4j", xs@_*) => MergeStrategy.first
+  case PathList("org", "slf4j", xs@_*) => MergeStrategy.first
+  case PathList("com", "sun", "activation", xs@_*) => MergeStrategy.first
+  case PathList("com", "sun", "research", xs@_*) => MergeStrategy.first
+  case PathList("io", "netty", xs@_*) => MergeStrategy.last
+  case PathList("javax", "activation", xs@_*) => MergeStrategy.first
+  case PathList("javax", "inject", xs@_*) => MergeStrategy.first
+  case PathList("javax", "ws", xs@_*) => MergeStrategy.first
+  case PathList("jersey", "repackaged", xs@_*) => MergeStrategy.first
+  case PathList("org", "aopalliance", xs@_*) => MergeStrategy.first
+  case PathList("javax", "el", xs@_*) => MergeStrategy.first
   case PathList("javax", "servlet", xs@_*) => MergeStrategy.first
   case PathList(ps@_*) if ps.last endsWith ".html" => MergeStrategy.first
-  case PathList("org", "apache", "commons", "logging", xs@_*) => MergeStrategy.first
+  case PathList("org", "apache", "commons", "logqging", xs@_*) => MergeStrategy.first
   case PathList("javax", "annotation", xs@_*) => MergeStrategy.last //favor jsr305
   case PathList("mime.types") => MergeStrategy.filterDistinctLines
   case PathList("com", "google", "common", "base", xs@_*) => MergeStrategy.last // spark-network-common pulls these in
@@ -161,6 +192,8 @@ assemblyMergeStrategy in assembly := {
 
 resolvers += Resolver.mavenLocal
 resolvers += "JitPack.IO" at "https://jitpack.io"
+resolvers += "clojar" at "https://clojars.org/repo"
+resolvers += "Confluent Platform" at "http://packages.confluent.io/maven/"
 
 publishMavenStyle := true
 

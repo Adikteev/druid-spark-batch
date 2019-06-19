@@ -305,9 +305,9 @@ object SparkBatchIndexTask
       .set("org.jboss.logging.provider", "slf4j")
       .set("druid.processing.columnCache.sizeBytes", "1000000000")
       .set("druid.extensions.searchCurrentClassloader", "true")
-      // registerKryoClasses already does the below two lines
-      //.set("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
-      //.set("spark.kryo.classesToRegister", SparkBatchIndexTask.KRYO_CLASSES.map(_.getCanonicalName).mkString(","))
+//       registerKryoClasses already does the below two lines
+//      .set("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
+//      .set("spark.kryo.classesToRegister", SparkBatchIndexTask.KRYO_CLASSES.map(_.getCanonicalName).mkString(","))
       .registerKryoClasses(SparkBatchIndexTask.getKryoClasses())
 
     val propertiesToSet = new Properties()
@@ -414,17 +414,17 @@ object SparkBatchIndexTask
       // In general they both "make list of jars... distribute via XXX... make that list available on all the workers"
       // but how they accomplish the XXX part is different.
       // So this **can't** use org.apache.druid.indexer.JobHelper::setupClasspath, and has to have its own way of parsing here.
-      val hadoopTaskJars = System.getProperties.toMap
-        .getOrElse(
-          "druid.hadoop.internal.classpath",
-          throw new IllegalStateException("missing druid.hadoop.internal.classpath from HadoopTask")
-        )
-      hadoopTaskJars.split(File.pathSeparator).filter(_.endsWith(".jar")).foreach(
-        x => {
-          log.info(s"Adding jar [$x]")
-          sc.addJar(x)
-        }
-      )
+//      val hadoopTaskJars = System.getProperties.toMap
+//        .getOrElse(
+//          "druid.hadoop.internal.classpath",
+//          throw new IllegalStateException("missing druid.hadoop.internal.classpath from HadoopTask")
+//        )
+//      hadoopTaskJars.split(File.pathSeparator).filter(_.endsWith(".jar")).foreach(
+//        x => {
+//          log.info(s"Adding jar [$x]")
+//          sc.addJar(x)
+//        }
+//      )
 
       val version = args.get(1)
       val outputPath = args.get(2)

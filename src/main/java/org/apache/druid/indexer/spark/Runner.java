@@ -20,6 +20,7 @@
 package org.apache.druid.indexer.spark;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 // This makes referencing the class in a reflective way easier
 public class Runner
@@ -28,4 +29,9 @@ public class Runner
   {
     return SparkBatchIndexTask.runTask(args);
   }
+
+  public static void main(String[] args){
+    SparkBatchIndexTask.runTask(new ArrayList<String>(Arrays.asList(args)));
+  }
+
 }
