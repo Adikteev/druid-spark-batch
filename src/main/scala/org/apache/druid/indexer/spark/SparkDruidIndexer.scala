@@ -148,7 +148,7 @@ object SparkDruidIndexer {
         fs.getFileStatus(p).getLen
       }
     ).sum
-    val startingPartitions = (totalGZSize / (100L << 20)).toInt + 1
+    val startingPartitions = 1000 //(totalGZSize / (100L << 20)).toInt + 1
 
     logInfo(s"Splitting [$totalGZSize] gz bytes into [$startingPartitions] partitions")
 
@@ -171,7 +171,8 @@ object SparkDruidIndexer {
         getP(rdd,
           (parser: InputRowParser[GenericRecord]) => parser.parse _,
           (parser: InputRowParser[GenericRecord]) => (str: GenericRecord) => parser.parseBatch(str),
-          dataSchema, startingPartitions, passableIntervals)
+          dataSchema, startingPartitions, passableIntervals).persist(StorageLevel.DISK_ONLY)
+
       }
       case x => {
         logTrace(
@@ -412,7 +413,7 @@ object SparkDruidIndexer {
     }.repartition(startingPartitions)
       // Persist the strings only rather than the event map
       // We have to do the parsing twice this way, but serde of the map is killer as well
-      .persist(StorageLevel.DISK_ONLY)
+//      .persist(StorageLevel.DISK_ONLY)
       .mapPartitions { it =>
         val queryGran = dataSchema.getDelegate.getGranularitySpec.getQueryGranularity
         val segmentGran = dataSchema.getDelegate.getGranularitySpec.getSegmentGranularity

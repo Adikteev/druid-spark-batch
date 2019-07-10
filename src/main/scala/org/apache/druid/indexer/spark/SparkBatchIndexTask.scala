@@ -294,10 +294,10 @@ object SparkBatchIndexTask
     val task = SerializedJsonStatic.mapper.readValue(args.get(0), classOf[SparkBatchIndexTask])
     val conf = new SparkConf()
       .setAppName(task.getId)
-      .setMaster(task.getMaster)
+     // .setMaster(task.getMaster)
       // These can screw with resource scheduling and may be worth removing
-      .set("spark.executor.memory", "7G")
-      .set("spark.executor.cores", "1")
+//      .set("spark.executor.memory", "7G")
+//      .set("spark.executor.cores", "1")
       .set("spark.kryo.referenceTracking", "false")
       .set("user.timezone", "UTC")
       .set("file.encoding", "UTF-8")
